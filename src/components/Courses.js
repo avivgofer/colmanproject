@@ -8,14 +8,21 @@ class Courses extends Component {
         super(props)
         this.state = {
             courses : props.courses
-        }
+        };
      }
      
   render() {
     return (
         <div className='coursesContainer'>
+            <div className="rightBanner">
+            {/* white space right side */}
+            </div>
             {
-                this.state.courses.map((courseBox) => <Coursebox key = {courseBox.props.courseName } courseName = {courseBox.props.courseName} numberOfDoneTest = {courseBox.props.numberOfDoneTest} numberOfTest = {courseBox.props.numberOfTest}/> )
+                this.state.courses.map((courseBox) =>   
+                    <Coursebox key = {courseBox.courseName } 
+                               courseName = {courseBox.courseName}
+                               numberOfDoneTasks = {courseBox.numberOfDoneTasks}
+                               numberOfTasks = {courseBox.numberOfTasks}/> )                                                          
             }
         </div>
         );

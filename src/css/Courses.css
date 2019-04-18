@@ -1,4 +1,8 @@
 .coursesContainer{
 display:flex;
 direction: rtl;
+width:100%;
+}
+.rightBanner{
+    width:124px;
 }

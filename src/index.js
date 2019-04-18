@@ -6,21 +6,22 @@ import Courses from '../src/components/Courses'
 import * as serviceWorker from './serviceWorker';
 import 'antd/dist/antd.css';
 import Coursebox from './components/Coursebox';
+import Coursepage from './components/Coursepage';
 
-var b = <Coursebox courseName = 'מבוא למדעי המחשב' numberOfDoneTest = {6} numberOfTest = {6}/> 
-var c = <Coursebox courseName = 'פיתוח תוכנה מתקדם' numberOfDoneTest = {5} numberOfTest = {7}/> 
-var a = <Coursebox courseName = 'אלגוריתמים 2' numberOfDoneTest = {5} numberOfTest = {9}/> 
-var gg = new Coursebox(1,'javascript',3,3);
-const d = [b,c,a] ;
+const a = {courseName : 'מבוא למדעי המחשב' , numberOfDoneTasks : 6 , numberOfTasks : 6} 
+const b = {courseName : 'פיתוח תוכנה מתקדם' , numberOfDoneTasks : 5 , numberOfTasks : 7} 
+const c = {courseName : 'אלגוריתמים 2' , numberOfDoneTasks : 5 , numberOfTasks : 9} 
+const d = new Coursebox(4,'javascript',3,3);
+const allCourses = [c,a,b] ;
 console.log(d);
 class Body extends Component {
     render() {
         return (
             <div>
                 <Header />
-                <Courses courses={d}/>
-            
-            </div>
+                {/* <Courses courses={allCourses}/> */}
+                <Coursepage course={a}/>
+            </div> 
         );
     }
 }

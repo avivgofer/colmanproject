@@ -4,17 +4,17 @@ import '../css/Coursebox.css';
 import { Progress } from 'antd';
 
 class Coursebox extends Component {
-        constructor(props,courseName,numberOfTest,numberOfDoneTest){
+        constructor(props){
             super(props)
             this.state = {
-                courseName: props.courseName || courseName,
-                numberOfTest: props.numberOfTest || numberOfTest ,
-                numberOfDoneTest: props.numberOfDoneTest || numberOfDoneTest 
-            }
+                courseName: props.courseName,
+                numberOfTasks: props.numberOfTasks,
+                numberOfDoneTasks: props.numberOfDoneTasks
+            }   
         }
      
       getProgress() {
-        return parseInt((100 * (this.state.numberOfDoneTest/this.state.numberOfTest)).toFixed(0))
+        return parseInt((100 * (this.state.numberOfDoneTasks/this.state.numberOfTasks)).toFixed(0))
      }
      
   render() {
