@@ -3,25 +3,52 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Header from '../src/components/Header'
 import Courses from '../src/components/Courses'
+import AddCourse from '../src/components/AddCourse'
+import CoursesT from '../src/components/CoursesT'
 import * as serviceWorker from './serviceWorker';
 import 'antd/dist/antd.css';
-import Coursebox from './components/Coursebox';
 import Coursepage from './components/Coursepage';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-const a = {courseName : 'מבוא למדעי המחשב' , numberOfDoneTasks : 6 , numberOfTasks : 6} 
-const b = {courseName : 'פיתוח תוכנה מתקדם' , numberOfDoneTasks : 5 , numberOfTasks : 7} 
-const c = {courseName : 'אלגוריתמים 2' , numberOfDoneTasks : 5 , numberOfTasks : 9} 
-const d = new Coursebox(4,'javascript',3,3);
-const allCourses = [c,a,b] ;
-console.log(d);
+
+const task1 = {taskName:'מטלה 1 ',taskNumber:1}
+    const task2 = {taskName:'מטלה 2 ',taskNumber:2}
+    const task3 = {taskName:'מטלה 3 ',taskNumber:3}
+    const task4 = {taskName:'מטלה 4 ',taskNumber:4}
+    const tasks = [task1,task2,task3,task4];
+    const a = {courseName : 'מבוא למדעי המחשב',coursePathName : 'mavo' , numberOfDoneTasks : 6 , numberOfTasks : 6,tasks: tasks}; 
+    const b = {courseName : 'פיתוח תוכנה מתקדם' ,coursePathName : 'pitoh', numberOfDoneTasks : 5 , numberOfTasks : 7} ;
+    const c = {courseName : 'אלגוריתמים 2' ,coursePathName : 'algo2', numberOfDoneTasks : 5 , numberOfTasks : 9,tasks: tasks} ;  
+    const coursesTemp = [a,b,c,b,c] ;
+    const Page404 = ({ location }) => (
+        <div>
+           <h2>No match found!</h2>
+        </div>
+     );
+
 class Body extends Component {
+    
     render() {
         return (
+            <Router>
             <div>
                 <Header />
-                {/* <Courses courses={allCourses}/> */}
-                <Coursepage course={a}/>
+                <Route
+                path='/'
+                exact = {true}
+                render={() => (<Courses courses = {coursesTemp} isAuthed={true} />)}
+                />
+                <Route
+                path='/admin'
+                exact = {true}
+                render={() => (<CoursesT courses = {coursesTemp} isAuthed={true} />)}
+                />
+                <Route  path="/course" component={Coursepage} />
+                <Route exact={true} path="/404" component={Page404} />
+                <Route exact={true} path="/admin/addCourse" component={AddCourse} />
+                
             </div> 
+            </Router>
         );
     }
 }

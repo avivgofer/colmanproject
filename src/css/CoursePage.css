@@ -1,8 +1,8 @@
 .Container{
     direction: rtl;
-    border: 1px solid black;
+    border-top: 1px solid black;
     width: 100;
-    padding: 0 124px 0 124px;
+    padding: 0 189px 0 124px;
 }
 
 
@@ -13,4 +13,36 @@
     color: #001E5B; 
     font-weight:bolder;
     font-size: 2rem;
+    padding-top:10px;
+    padding-bottom:40px;    
+    text-align:right;
 }
+Button{ 
+   margin-left:20px !important;
+   margin-top: 25px !important;
+   margin-bottom:25px !important;
+}
+.chooseTask .ant-select-selection
+{ 
+    margin-right:8px;
+ }
+ .chooseTask .chooseSpan{
+     font-weight: bold;
+     font-size:1.4rem;
+     color: black;
+ }
+ .ant-select-selection{
+     width: 191px;     
+ }
+ .clearfix span{
+     float:right;
+ }
+ .clearfix {
+    padding-top:25px;
+ }
+ span .ant-upload {
+    height:200px !important;
+ }
+ span .ant-upload-list-item-name{
+     margin-right:15px;
+ }

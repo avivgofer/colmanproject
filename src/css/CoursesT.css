@@ -1,0 +1,11 @@
+.Container{
+    direction: rtl;
+    border-top: 1px solid black;
+    width: 100;
+    padding: 0 189px 0 124px;
+}
+.courses{
+    display:flex;
+    direction: rtl;
+    width:100%;
+}

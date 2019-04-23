@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import  Coursebox  from './Coursebox';
 import { Link } from 'react-router-dom'
-import '../css/Courses.css';
+import '../css/CoursesT.css';
+import { Button } from 'antd';
 
 
 
 
-class Courses extends Component {
+class CoursesT extends Component {
      constructor(props){
         super(props)
         this.state = {
@@ -20,8 +21,19 @@ class Courses extends Component {
   render() {
     
     return (
-        <div className='coursesContainer'>
-          
+        <div className='Container'>
+        <div>
+        <Link to='/admin/addCourse'>
+        <Button >הוסף קורס</Button>
+        </Link>
+        </div>
+        
+        <div className='courses'>
+{/*             
+            <div className='addBtn'>
+            <Button>הוסף קורס</Button>
+            </div>
+            */}
             {
                 this.state.courses.map((course , idx) =>  
                  <Link to={'/course/'+course.coursePathName} key= {idx}> 
@@ -29,8 +41,9 @@ class Courses extends Component {
                      </Link> )                                                          
             }
         </div>
+        </div>
         );
       }
     }
     
-    export default Courses;
+    export default CoursesT;
