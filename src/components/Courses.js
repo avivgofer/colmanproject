@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import  Coursebox  from './Coursebox';
-import { Link } from 'react-router-dom'
 import '../css/Courses.css';
+import { Link } from 'react-router-dom'
 
 
 
@@ -10,7 +10,7 @@ class Courses extends Component {
      constructor(props){
         super(props)
         this.state = {
-            courses: props.courses
+            // courses: props.courses
         };
         
      }
@@ -23,10 +23,11 @@ class Courses extends Component {
         <div className='coursesContainer'>
           
             {
-                this.state.courses.map((course , idx) =>  
-                 <Link to={'/course/'+course.coursePathName} key= {idx}> 
+                this.props.courses.map((course , idx) =>  
+                <Link to={'/course/'+course.coursePathName} key= {course.courseName}> 
                     <Coursebox onClick={this.handleClick} course = {course} key = {idx} />
-                     </Link> )                                                          
+                    </Link>
+                     )                                                          
             }
         </div>
         );

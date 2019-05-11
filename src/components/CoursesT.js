@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import  Coursebox  from './Coursebox';
 import { Link } from 'react-router-dom'
 import '../css/CoursesT.css';
-import { Button } from 'antd';
+import { Button ,Icon} from 'antd';
+import { firebase,app } from 'firebase';
 
 
 
@@ -11,13 +12,30 @@ class CoursesT extends Component {
      constructor(props){
         super(props)
         this.state = {
-            courses: props.courses
+            courses: this.getCoursesT()
         };
+        this.deleteCourse = this.deleteCourse.bind(this);
+       // this.getCoursesT = getCoursesT.bind(this);
         
      }
-     handleClick() {
-        console.log('this is:', this);
+     componentDidMount() {
+        this.checkUser();
+     }
+      checkUser() {
+       
       }
+      deleteCourse(value){
+            var a = JSON.parse(localStorage.getItem('myData'));
+            a = a.filter((e) => e.coursePathName !== value.coursePathName);
+            localStorage.setItem('myData', JSON.stringify(a));
+            this.setState({courses:this.getCoursesT()});
+        }
+      getCoursesT() {
+        return JSON.parse(localStorage.getItem('myData'));
+       }
+      handleClick() {
+          console.log('this is:', this);
+       }
   render() {
     
     return (
@@ -29,16 +47,17 @@ class CoursesT extends Component {
         </div>
         
         <div className='courses'>
-{/*             
-            <div className='addBtn'>
-            <Button>הוסף קורס</Button>
-            </div>
-            */}
             {
                 this.state.courses.map((course , idx) =>  
-                 <Link to={'/course/'+course.coursePathName} key= {idx}> 
+                (
+                  <div key={idx+2}>
+                    <Link to={'/admin/'+course.coursePathName} key= {course.courseName}> 
+                    <Icon value={course} onClick={() => {if(window.confirm('Delete the item?')) {this.deleteCourse(course)}}} type="delete" key={idx+1} />
                     <Coursebox onClick={this.handleClick} course = {course} key = {idx} />
-                     </Link> )                                                          
+                    </Link>
+                  </div>
+                )
+                      )                                                  
             }
         </div>
         </div>

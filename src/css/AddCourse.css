@@ -1,9 +1,13 @@
 
 .my-inputs{
-    width:250px !important;
+    width:311px !important;
 }
 .ant-upload{
-    width:250px !important;
+    width:311px !important;
+}
+.submissionBtn Button{
+    padding-right:31.8px !important;
+    padding-left:31.8px !important;
 }
 
 /* .ant-input{

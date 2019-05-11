@@ -6,6 +6,8 @@ import '../css/CoursePage.css';
 import { Input } from 'antd';
 //window.location.pathname.split('/')[2]
 
+
+
 function getCourse()
 {
     const nameFromUrl = window.location.pathname.split('/')[2];
@@ -32,19 +34,44 @@ class Coursepage extends Component {
      constructor(props){
         super(props)
         this.state = {
-          course: getCourse()
+          course: getCourse(),
+          selectedTask : '',
+          filesArray : ''
         };
+        this.submission = this.submission.bind(this);
      }
+     submission() {
+       console.log(!this.state.selectedTask);
+     
+      if(!this.state.selectedTask){
+        console.log(this)
 
+        this.setState({
+          selectedTask : this.defaultTaskValue
+        });
+        console.log(this.state);
+      }
+      console.log(this.state);
+      if(!this.state.filesArray)
+      {
+        message.error(`no file uploaded.`);
+      }
+     
+    }
+    
   render() {
     function handleChange(value) {
+      myThis.setState({
+        selectedTask : value
+      });
       console.log(`selected ${value}`);
     }
     
-     const defaultTaskValue= this.state.course ? this.state.course.tasks[0].taskName : 'אין מטלות';
+    //  const defaultTaskValue = this.state.course ? this.state.course.tasks[0].taskName : 'אין מטלות';
      const { TextArea } = Input;
      const Option = Select.Option;
      const Dragger = Upload.Dragger;
+     const myThis = this;
      const props = {
         name: 'file',
         multiple: true,
@@ -52,16 +79,42 @@ class Coursepage extends Component {
         onChange(info) {
           const status = info.file.status;
           if (status !== 'uploading') {
-            console.log(info.file, info.fileList);
+            // console.log(info.file, info.fileList);
           }
           if (status === 'done') {
             message.success(`${info.file.name} file uploaded successfully.`);
+            myThis.setState({
+              filesArray: info.fileList
+            });
           } else if (status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
          }
        },
      };
 
+     const propsForCheckFile = {
+      name: 'file',
+      multiple: true,
+      action: '//jsonplaceholder.typicode.com/posts/',
+      onChange(info) {
+        const status = info.file.status;
+        if (status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (status === 'done') {
+          // console.log(`${info.file}`);
+          myThis.setState({
+              taskCheckFile:info.file
+          });
+          // console.log(myThis.state);
+          message.success(`${info.file.name} file uploaded successfully.`);
+        } else if (status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+       }
+     },
+   };
+
+    
     return (
         <div className='Container'>
             <div className="coureseTitle">
@@ -69,7 +122,7 @@ class Coursepage extends Component {
             </div>
             <div className="chooseTask">
                 <span className='chooseSpan'>בחר מטלה :  </span>
-                <Select defaultValue={defaultTaskValue}  onChange={handleChange}>
+                <Select defaultValue="בחר מטלה"  onChange={handleChange}>
                 {
                    (this.state.course.tasks) ?  this.state.course.tasks.map((task,idx) =>   
                     <Option  key = {idx} value = {task.taskNumber}>{task.taskName}</Option> ) 
@@ -86,11 +139,13 @@ class Coursepage extends Component {
               <p className="ant-upload-drag-icon">
                 <Icon type="inbox" />
               </p>
-              <p className="ant-upload-text">Click or drag file to this area to upload</p>
-              <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
+              <p className="ant-upload-text"> גרור קבצים לכאן </p>
+              <p className="ant-upload-hint">או לחץ להעלות קבצים</p>
             </Dragger>
-            <Button type="primary">  הגשה במוד אימון</Button>
-            <Button type="primary"> הגשה סופית </Button>
+            <div className="submissionBtn"> 
+              <Button type="primary">  הגשה במוד אימון</Button>
+              <Button onClick={this.submission } type="primary"> הגשה סופית </Button>
+            </div>
             <TextArea />
         </div>
         );

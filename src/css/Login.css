@@ -1,0 +1,14 @@
+.loginInput{
+    text-align:left;
+    
+}
+.Container-login{
+  margin: auto;
+  width: 27%;
+  margin-top: 80px;
+}
+.btn-login{
+    margin: auto !important;
+    margin-left:35% !important;
+    margin-top:5px !important;
+}

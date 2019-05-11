@@ -4,7 +4,9 @@
     height:100px;
     direction:rtl;
     align-items: flex-end;
-    background-color: #69CCE8;}
+    background-color: #69CCE8;
+    margin-bottom:25px;
+}
 .imgBox img{
     width:95px;
 }
