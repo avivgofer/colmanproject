@@ -69,7 +69,6 @@ class Body extends Component {
     //    }
     //  }
      checkLog() {
-       
       //  this.setState({httpRequests: this.state.httpRequests + 1})
       this.state.httpRequests = this.state.httpRequests + 1;
       app.auth().onAuthStateChanged((user) => {
@@ -82,7 +81,9 @@ class Body extends Component {
       })
     }
 
-    isUserExist = () => !!this.state.user
+    isUserExist = () => !!this.state.user;
+
+    isUserIsAdmin = () => (this.state.user.email === 'eli@gmail.com');
         
      
     render() {
@@ -96,8 +97,12 @@ class Body extends Component {
           <Header />
              <Route exact={true} path="/login" component={Login} />
           { !this.isUserExist()
+        
             ? <Login />
-            : <div>
+            : 
+            this.isUserIsAdmin()
+            ?
+             <div>
              <Switch>
                 <Route
                 path='/'
@@ -117,6 +122,20 @@ class Body extends Component {
                 <Route path="*" component={ErrorNotFound} />    
                 </Switch>           
             </div> 
+            :
+            <div>
+            <Switch>
+               <Route
+               path='/'
+               exact = {true}
+               render={() => (<Courses courses = {coursesTemp} isAuthed={true} />)}
+               />
+               
+               <Route  path="/course" component={Coursepage} />
+               <Route path="*" component={ErrorNotFound} />    
+               </Switch>           
+           </div> 
+
           }
          
             </Router>
