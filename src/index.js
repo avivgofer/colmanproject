@@ -130,7 +130,6 @@ class Body extends Component {
                exact = {true}
                render={() => (<Courses courses = {coursesTemp} isAuthed={true} />)}
                />
-               
                <Route  path="/course" component={Coursepage} />
                <Route path="*" component={ErrorNotFound} />    
                </Switch>           

@@ -117,9 +117,28 @@ class Coursepage extends Component {
     
     return (
         <div className='Container'>
+        <table>
+        <tbody>
+          <tr>
+            <th>
             <div className="coureseTitle">
                {this.state.course.courseName}
+             </div>
+            </th>
+            <th>
+            <div className='gradeTitle'>
+              ציון:
             </div>
+            </th>
+          </tr>
+        </tbody>
+        </table>
+        
+           
+           
+        
+            
+            <TextArea />
             <div className="chooseTask">
                 <span className='chooseSpan'>בחר מטלה :  </span>
                 <Select defaultValue="בחר מטלה"  onChange={handleChange}>
@@ -146,7 +165,7 @@ class Coursepage extends Component {
               <Button type="primary">  הגשה במוד אימון</Button>
               <Button onClick={this.submission } type="primary"> הגשה סופית </Button>
             </div>
-            <TextArea />
+           
         </div>
         );
       }

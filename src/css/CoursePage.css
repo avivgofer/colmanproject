@@ -9,6 +9,7 @@
     width:124px;
 }
 .coureseTitle{
+    width: 611px;
     color: #001E5B; 
     font-weight:bolder;
     font-size: 2rem;
@@ -44,4 +45,16 @@ Button{
  }
  span .ant-upload-list-item-name{
      margin-right:15px;
+ }
+ TextArea{
+     float: left;
+     height: 350px !important;
+     width:500px !important;
+ }
+ .gradeTitle{
+     font-size:1.7rem;
+    text-align: center;
+    width: 500px;
+    margin-top:50px;
+    color:#011D5B;
  }
