@@ -6,6 +6,7 @@ import Courses from '../src/components/Courses'
 import AddCourse from '../src/components/AddCourse'
 import CoursesT from '../src/components/CoursesT'
 import Login from '../src/components/Login'
+import LoginOnly from '../src/components/LoginOnly'
 import * as serviceWorker from './serviceWorker';
 import 'antd/dist/antd.css';
 import {Icon} from 'antd'
@@ -25,7 +26,7 @@ const task1 = {taskName:'מטלה 1 ',taskNumber:1}
     const a = {courseName : 'מבוא למדעי המחשב',coursePathName : 'mavo' , numberOfDoneTasks : 6 , numberOfTasks : 6,tasks: tasks}; 
     const b = {courseName : 'פיתוח תוכנה מתקדם' ,coursePathName : 'pitoh', numberOfDoneTasks : 5 , numberOfTasks : 7} ;
     const c = {courseName : 'אלגוריתמים 2' ,coursePathName : 'algo2', numberOfDoneTasks : 5 , numberOfTasks : 9,tasks: tasks} ;  
-    const coursesTemp = [a,b,c,b,c] ;
+    const coursesTemp = [a,b,c] ;
 
 
 
@@ -84,8 +85,11 @@ class Body extends Component {
     isUserExist = () => !!this.state.user;
 
     isUserIsAdmin = () => (this.state.user.email === 'eli@gmail.com');
-        
-     
+    
+    logout() {
+      app.auth().signOut()
+      this.props.history.push('/')
+    }
     render() {
         return (
           this.state.httpRequests > 0 
@@ -95,14 +99,17 @@ class Body extends Component {
           <Router>
              
           <Header />
-             <Route exact={true} path="/login" component={Login} />
+             <Route exact={true} path="/login" component={LoginOnly} />
           { !this.isUserExist()
         
-            ? <Login />
+            ? <LoginOnly />
             : 
             this.isUserIsAdmin()
             ?
              <div>
+               <div className='authStatus'>
+              <button onClick={this.logout}>התנתק</button> 
+              </div>
              <Switch>
                 <Route
                 path='/'
@@ -124,6 +131,9 @@ class Body extends Component {
             </div> 
             :
             <div>
+              <div className='authStatus'>
+              <button onClick={this.logout}>התנתק</button> 
+              </div>
             <Switch>
                <Route
                path='/'

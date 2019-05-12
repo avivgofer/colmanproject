@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import logo from '../images/colmanLogo.png';
 import '../css/Header.css';
+import { app } from '../base'
 
 class Header extends Component {
+ 
   render() {
     return (
       <div>
@@ -19,6 +21,7 @@ class Header extends Component {
                 <h2>מערכת בדיקות אוטומטית</h2>
                 </div>
               </div>
+              
           </div>
         </header>
       </div>

@@ -133,11 +133,6 @@ class Coursepage extends Component {
           </tr>
         </tbody>
         </table>
-        
-           
-           
-        
-            
             <TextArea />
             <div className="chooseTask">
                 <span className='chooseSpan'>בחר מטלה :  </span>

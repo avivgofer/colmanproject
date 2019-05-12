@@ -37,7 +37,7 @@ class AddCourse extends Component {
         a.push(this.state)
         localStorage.setItem('myData', JSON.stringify(a));
         console.log(this.state);
-        debugger;
+      
         this.props.history.push('/admin')
        }
        else{

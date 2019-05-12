@@ -48,16 +48,18 @@ class CoursesT extends Component {
         
         <div className='courses'>
             {
-                this.state.courses.map((course , idx) =>  
-                (
-                  <div key={idx+2}>
-                    <Link to={'/admin/'+course.coursePathName} key= {course.courseName}> 
-                    <Icon value={course} onClick={() => {if(window.confirm('Delete the item?')) {this.deleteCourse(course)}}} type="delete" key={idx+1} />
-                    <Coursebox onClick={this.handleClick} course = {course} key = {idx} />
-                    </Link>
-                  </div>
-                )
-                      )                                                  
+                this.state.courses.map(
+                (course , idx) =>  
+                  (
+                    <div key={idx+2}>
+                      <Icon value={course} onClick={() => {if(window.confirm('Are you sure? Delete item?')) {this.deleteCourse(course)}}}
+                       type="delete" key={idx+1} />
+                       <Link to={'/admin/'+course.coursePathName} key= {course.courseName}> 
+                      <Coursebox onClick={this.handleClick} course = {course} key = {idx} />
+                      </Link>
+                    </div>
+                  )
+                )                                                    
             }
         </div>
         </div>

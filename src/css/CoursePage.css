@@ -1,7 +1,7 @@
 .Container{
     direction: rtl;
     width: 100;
-    padding: 0 189px 0 124px;
+    padding: 0 189px 0 189px;
 }
 
 
@@ -9,7 +9,7 @@
     width:124px;
 }
 .coureseTitle{
-    width: 611px;
+    width: 555px;
     color: #001E5B; 
     font-weight:bolder;
     font-size: 2rem;
