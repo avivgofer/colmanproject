@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../css/Coursebox.css';
 import { Progress } from 'antd';
-import { Link } from 'react-router-dom'
 
 class Coursebox extends Component {
         constructor(props){

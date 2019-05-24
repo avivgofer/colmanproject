@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
-import { Toaster, Intent } from '@blueprintjs/core'
+import { Intent } from '@blueprintjs/core'
 import { app } from '../base'
 import '../css/LoginOnly.css'
 import {message } from 'antd';

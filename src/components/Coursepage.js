@@ -36,7 +36,8 @@ class Coursepage extends Component {
         this.state = {
           course: getCourse(),
           selectedTask : '',
-          filesArray : ''
+          filesArray : '',
+          file : ''
         };
         this.submission = this.submission.bind(this);
      }
@@ -52,12 +53,37 @@ class Coursepage extends Component {
         console.log(this.state);
       }
       console.log(this.state);
-      if(!this.state.filesArray)
+      if(!this.state.file)
       {
         message.error(`no file uploaded.`);
       }
      
     }
+    saveData = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      return function (data, fileName) {
+          var json = JSON.stringify(data),
+              blob = new Blob([json], {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+  }());
+  
+  download = () => {
+      if(this.state.file)
+      {
+        var data = this.state.file.originFileObj;
+        console.log(data);
+        debugger;
+        const fileName = data.name
+        this.saveData(data, fileName);
+      } 
+  }
     
   render() {
     function handleChange(value) {
@@ -66,6 +92,8 @@ class Coursepage extends Component {
       });
       console.log(`selected ${value}`);
     }
+
+   
     
     //  const defaultTaskValue = this.state.course ? this.state.course.tasks[0].taskName : 'אין מטלות';
      const { TextArea } = Input;
@@ -84,35 +112,13 @@ class Coursepage extends Component {
           if (status === 'done') {
             message.success(`${info.file.name} file uploaded successfully.`);
             myThis.setState({
-              filesArray: info.fileList
+              file: info.file
             });
           } else if (status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
          }
        },
      };
-
-     const propsForCheckFile = {
-      name: 'file',
-      multiple: true,
-      action: '//jsonplaceholder.typicode.com/posts/',
-      onChange(info) {
-        const status = info.file.status;
-        if (status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-          // console.log(`${info.file}`);
-          myThis.setState({
-              taskCheckFile:info.file
-          });
-          // console.log(myThis.state);
-          message.success(`${info.file.name} file uploaded successfully.`);
-        } else if (status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-       }
-     },
-   };
 
     
     return (
@@ -144,7 +150,7 @@ class Coursepage extends Component {
                 }       
                 </Select>
                 <br/>
-                   <Button type="primary"> הורד קבצים</Button>
+                   <Button type="primary" onClick={this.download}> הורד קבצים</Button>
                    <Button type="primary"> פתרון כללי</Button>
                    <Button type="primary"> פתרון שלי</Button>
             

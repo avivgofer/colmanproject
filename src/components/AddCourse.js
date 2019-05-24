@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { Upload, Icon, message, Button } from 'antd';
  import '../css/AddCourse.css';
 import { Input } from 'antd';
-import { Link } from 'react-router-dom'
-import { Redirect } from 'react-router'
-//window.location.pathname.split('/')[2]
 
 
 
@@ -34,10 +31,13 @@ class AddCourse extends Component {
        if(this.state.courseName && this.state.coursePathName)
        {
         var a = JSON.parse(localStorage.getItem('myData'));
-        a.push(this.state)
+        if(!a){
+          a = [];
+        }
+        a.push(this.state);
         localStorage.setItem('myData', JSON.stringify(a));
         console.log(this.state);
-      
+        debugger;
         this.props.history.push('/admin')
        }
        else{

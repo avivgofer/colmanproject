@@ -3,7 +3,6 @@ import  Coursebox  from './Coursebox';
 import { Link } from 'react-router-dom'
 import '../css/CoursesT.css';
 import { Button ,Icon} from 'antd';
-import { firebase,app } from 'firebase';
 
 
 
@@ -48,6 +47,7 @@ class CoursesT extends Component {
         
         <div className='courses'>
             {
+              this.state.courses ?
                 this.state.courses.map(
                 (course , idx) =>  
                   (
@@ -59,7 +59,8 @@ class CoursesT extends Component {
                       </Link>
                     </div>
                   )
-                )                                                    
+                )   
+                : ''                                                 
             }
         </div>
         </div>

@@ -3,8 +3,8 @@ import {Link} from 'react-router-dom';
 import '../src/css/ErrorNotFound.css'
 
 
-class ErrorNotFound extends Component {
-
+class ErrorNotFound extends Component {   
+     
     render() {
         return (
             <div id='error'>
@@ -14,8 +14,6 @@ class ErrorNotFound extends Component {
                         <h1>
                         <Link to='/'>Go Home</Link>
                         </h1>
-                        
-                       
                 </p>
               
             </div>

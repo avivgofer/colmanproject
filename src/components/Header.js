@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import logo from '../images/colmanLogo.png';
 import '../css/Header.css';
-import { app } from '../base'
 
 class Header extends Component {
  

@@ -3,7 +3,6 @@ import { Upload, Icon, message, Button } from 'antd';
  import '../css/AddCourse.css';
 import { Input } from 'antd';
 import { Link } from 'react-router-dom'
-import { debug } from 'util';
 
 
 
@@ -25,6 +24,7 @@ class AdminCoursePage extends Component {
       }
       addCourse(){
           console.log(this.state);
+          debugger;
         // if(this.state.taskName)
         // {
         //  var a = JSON.parse(localStorage.getItem('myData'));

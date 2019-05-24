@@ -5,7 +5,6 @@ import Header from '../src/components/Header'
 import Courses from '../src/components/Courses'
 import AddCourse from '../src/components/AddCourse'
 import CoursesT from '../src/components/CoursesT'
-import Login from '../src/components/Login'
 import LoginOnly from '../src/components/LoginOnly'
 import * as serviceWorker from './serviceWorker';
 import 'antd/dist/antd.css';
@@ -57,9 +56,7 @@ class Body extends Component {
      componentDidMount() {
        this.checkLog()
        this.setState({initial: false})
-       fetch('https://jsonplaceholder.typicode.com/todos/2')
-  .then(response => response.json())
-  .then(json => console.log(json))
+       
      }
 
     //  login = async () => {
@@ -88,7 +85,7 @@ class Body extends Component {
     
     logout() {
       app.auth().signOut()
-      this.props.history.push('/')
+      // this.props.history.push('/')
     }
     render() {
         return (
