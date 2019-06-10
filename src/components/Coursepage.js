@@ -4,6 +4,7 @@ import { Select } from 'antd';
 import { Button } from 'antd';
 import '../css/CoursePage.css';
 import { Input } from 'antd';
+import axios from 'axios';
 //window.location.pathname.split('/')[2]
 
 
@@ -37,7 +38,8 @@ class Coursepage extends Component {
           course: getCourse(),
           selectedTask : '',
           filesArray : '',
-          file : ''
+          file : '',
+          studentID: ''
         };
         this.submission = this.submission.bind(this);
      }
@@ -57,8 +59,26 @@ class Coursepage extends Component {
       {
         message.error(`no file uploaded.`);
       }
+
+      let formData = new FormData();
+      formData.append("solution_files", this.state.file);
+      formData.append("identityNumber", this.state.studentID);
+      formData.append("courseName", this.state.course.courseName);
+      formData.append("taskNumber", this.state.selectedTask);
+      formData.append("mode", 'exam');
+      var conetentType = { headers: { "Content-Type": "multipart/form-data" } };
+      axios.post("./", formData, conetentType)
+        .then(res => console.log(res.data))
+        .then(res =>
+          document.getElementById("iframe").contentWindow.document.write(res.data)
+        );
      
     }
+
+
+
+
+
     saveData = (function () {
       var a = document.createElement("a");
       document.body.appendChild(a);
@@ -150,10 +170,18 @@ class Coursepage extends Component {
                 }       
                 </Select>
                 <br/>
-                   <Button type="primary" onClick={this.download}> הורד קבצים</Button>
-                   <Button type="primary"> פתרון כללי</Button>
-                   <Button type="primary"> פתרון שלי</Button>
-            
+                <br/>
+                
+                <span className='chooseSpan'>הכנס תעודת זהות :  </span>
+                <br/>
+                <div>
+                <Input className='my-inputs' onChange={(evt) => { this.setState( {studentID:evt.target.value}) }} />
+                </div>
+                <br/>
+
+                <Button type="primary" onClick={this.download}> הורד קבצים</Button>
+                <Button type="primary"> פתרון כללי</Button>
+                <Button type="primary"> פתרון שלי</Button>
             </div>
             <Dragger {...props}>
               <p className="ant-upload-drag-icon">

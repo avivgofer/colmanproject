@@ -3,7 +3,9 @@
     width: 100;
     padding: 0 189px 0 189px;
 }
-
+body{
+    background-image: url("https://www.godself.com/wp-content/uploads/2015/04/bluewave-bkg-1980light.jpg");
+}
 
 .rightBanner{
     width:124px;
