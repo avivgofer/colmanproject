@@ -6,12 +6,16 @@
 body{
     background-image: url("https://www.godself.com/wp-content/uploads/2015/04/bluewave-bkg-1980light.jpg");
 }
+#gradeArea{
+    direction: ltr;
+    font-size:2rem;
+}
 
 .rightBanner{
     width:124px;
 }
 .coureseTitle{
-    width: 555px;
+    width: 515px;
     color: #001E5B; 
     font-weight:bolder;
     font-size: 2rem;

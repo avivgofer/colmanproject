@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { Upload, Icon, message } from 'antd';
-import { Select } from 'antd';
+import { Select ,Spin } from 'antd';
 import { Button } from 'antd';
 import '../css/CoursePage.css';
 import { Input } from 'antd';
 import axios from 'axios';
 //window.location.pathname.split('/')[2]
 
+
+
+
+function pasteGrade() {
+  var t = document.getElementById("gradeArea").textContent;
+  var y = document.createTextNode("This just got added");
+  
+  t.appendChild(y);
+}
 
 
 function getCourse()
@@ -57,23 +66,33 @@ class Coursepage extends Component {
       console.log(this.state);
       if(!this.state.file)
       {
-        message.error(`no file uploaded.`);
+        // message.error(`no file uploaded.`);
       }
 
       let formData = new FormData();
-      formData.append("solution_files", this.state.file);
-      formData.append("identityNumber", this.state.studentID);
-      formData.append("courseName", this.state.course.courseName);
-      formData.append("taskNumber", this.state.selectedTask);
-      formData.append("mode", 'exam');
-      var conetentType = { headers: { "Content-Type": "multipart/form-data" } };
-      axios.post("./", formData, conetentType)
-        .then(res => console.log(res.data))
+      formData.append("mode", 'practice');
+      console.log(this.state.filesArray);
+       debugger;
+         formData.append("solution_files", this.state.filesArray);
+
+
+  // for( var i = 0; i < this.state.filesArray.length; i++ ){
+  //   let file = this.state.filesArray[i];
+  
+  //   formData.append('solution_files[' + i + ']', file.originFileObj);
+  // }
+
+      var conetentType = { headers: { "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjAyMzQ3NjcxNTcsImV4cCI6MTU2MDMyMTE2NzE1N30.rJvK9y7F5pXa1EEbxwSDWJPBfrNulPsiHIRmxfG0FDs" } };
+      axios.post("/tasks/5cfeba9681b1f1212c0e47d5/submissions", formData, conetentType)
+        .then(res => document.getElementById("gradeArea").value ="your grade is: "+ res.data.grade)
         .then(res =>
-          document.getElementById("iframe").contentWindow.document.write(res.data)
+          // this.document.getElementById("gradeArea").contentWindow.document.write(res.data)
+          // document.getElementById("gradeArea").value = 
+          console.log()
         );
      
     }
+
 
 
 
@@ -131,9 +150,17 @@ class Coursepage extends Component {
           }
           if (status === 'done') {
             message.success(`${info.file.name} file uploaded successfully.`);
-            myThis.setState({
-              file: info.file
-            });
+            console.log(info.file);
+          
+            myThis.setState(prevState => ({
+              filesArray: [...prevState.filesArray, info.file]
+            }))
+
+            // myThis.setState({
+            //   filesArray: info.filesArray
+            //   // file: info.file
+            // });
+           
           } else if (status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
          }
@@ -159,7 +186,9 @@ class Coursepage extends Component {
           </tr>
         </tbody>
         </table>
-            <TextArea />
+            <TextArea id="gradeArea"/>
+            {/* <Spin tip="Loading..." delay="3"> */}
+            {/* </Spin> */}
             <div className="chooseTask">
                 <span className='chooseSpan'>בחר מטלה :  </span>
                 <Select defaultValue="בחר מטלה"  onChange={handleChange}>
