@@ -3,6 +3,7 @@ import { Upload, Icon, message } from 'antd';
 import { Select ,Spin } from 'antd';
 import { Button } from 'antd';
 import '../css/CoursePage.css';
+import NewExample from './NewExample'
 import { Input } from 'antd';
 import axios from 'axios';
 //window.location.pathname.split('/')[2]
@@ -40,19 +41,56 @@ function getCourse()
     return x;
 }
 
+function form(mode,filesArray) {
+    let data = new FormData()
+    data.append('mode',mode)
+    filesArray.map(file => data.append('solution_files', file))
+    return data
+}
+
 class Coursepage extends Component {
      constructor(props){
         super(props)
         this.state = {
+          isSent : false,
           course: getCourse(),
           selectedTask : '',
-          filesArray : '',
+          filesArray : [],
           file : '',
-          studentID: ''
+          studentID: '',
+          output: '',
+          mode: ''
         };
         this.submission = this.submission.bind(this);
      }
-     submission() {
+
+  //    get form() {
+  //      console.log(this.state)
+  //      debugger
+  //     let data = new FormData()
+  //     data.append('mode', this.state.mode)
+  //     this.state.filesArray.map(file => data.append('solution_files', file))
+  //     return data
+  // }
+  
+
+     setResult = (output) => {
+       this.setState({output})
+     }
+
+
+     beforeUpload = (file) => {
+      const newFiles = this.state.filesArray
+      newFiles.push(file)
+      this.setState({filesArray: newFiles})
+  }
+     submission(mode) {
+
+      this.setState({
+        mode:mode
+      });
+      console.log(this.state)
+      debugger
        console.log(!this.state.selectedTask);
      
       if(!this.state.selectedTask){
@@ -69,12 +107,43 @@ class Coursepage extends Component {
         // message.error(`no file uploaded.`);
       }
 
-      let formData = new FormData();
-      formData.append("mode", 'practice');
-      console.log(this.state.filesArray);
-       debugger;
-         formData.append("solution_files", this.state.filesArray);
+      
 
+      // let formData = new FormData();
+      // formData.append("mode", "practice");
+
+      
+      // console.log(this.state.filesArray);
+       
+      //  this.state.filesArray.map((file) => {
+      //  formData.append("solution_files",file)
+      //  });  
+   
+       
+        //  formData.append("solution_files", this.state.filesArray);
+
+        const data = form(mode,this.state.filesArray);
+
+        const requestOptions = {
+          method: 'POST',
+          url: '/tasks/5cfeba9681b1f1212c0e47d5/submissions',
+          data,
+          'Content-Type': 'multipart/form-data',
+          headers: {
+              authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjAyMzQ3NjcxNTcsImV4cCI6MTU2MDMyMTE2NzE1N30.rJvK9y7F5pXa1EEbxwSDWJPBfrNulPsiHIRmxfG0FDs'
+          }
+      }
+      console.log(this.state)
+      
+          this.setState({isSent: true})
+          axios(requestOptions).then(res => {
+              this.setResult(`${res.data.output}! grade:${res.data.grade}`)
+          })
+          .catch(err => {//TODO something with result after deadline 
+              debugger
+          })
+
+      
 
   // for( var i = 0; i < this.state.filesArray.length; i++ ){
   //   let file = this.state.filesArray[i];
@@ -82,21 +151,16 @@ class Coursepage extends Component {
   //   formData.append('solution_files[' + i + ']', file.originFileObj);
   // }
 
-      var conetentType = { headers: { "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjAyMzQ3NjcxNTcsImV4cCI6MTU2MDMyMTE2NzE1N30.rJvK9y7F5pXa1EEbxwSDWJPBfrNulPsiHIRmxfG0FDs" } };
-      axios.post("/tasks/5cfeba9681b1f1212c0e47d5/submissions", formData, conetentType)
-        .then(res => document.getElementById("gradeArea").value ="your grade is: "+ res.data.grade)
-        .then(res =>
-          // this.document.getElementById("gradeArea").contentWindow.document.write(res.data)
-          // document.getElementById("gradeArea").value = 
-          console.log()
-        );
+      // var conetentType = { headers: { "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjAyMzQ3NjcxNTcsImV4cCI6MTU2MDMyMTE2NzE1N30.rJvK9y7F5pXa1EEbxwSDWJPBfrNulPsiHIRmxfG0FDs" } };
+      // axios.post("/tasks/5cfeba9681b1f1212c0e47d5/submissions", formData, conetentType)
+      //   .then(res => document.getElementById("gradeArea").value ="your grade is: "+ res.data.grade)
+      //   .then(res =>
+      //     // this.document.getElementById("gradeArea").contentWindow.document.write(res.data)
+      //     // document.getElementById("gradeArea").value = 
+      //     console.log()
+      //   );
      
     }
-
-
-
-
-
 
     saveData = (function () {
       var a = document.createElement("a");
@@ -152,9 +216,9 @@ class Coursepage extends Component {
             message.success(`${info.file.name} file uploaded successfully.`);
             console.log(info.file);
           
-            myThis.setState(prevState => ({
-              filesArray: [...prevState.filesArray, info.file]
-            }))
+            // myThis.setState(prevState => ({
+            //   filesArray: [...prevState.filesArray, info.file]
+            // }))
 
             // myThis.setState({
             //   filesArray: info.filesArray
@@ -186,12 +250,12 @@ class Coursepage extends Component {
           </tr>
         </tbody>
         </table>
-            <TextArea id="gradeArea"/>
+            <TextArea value={this.state.output} id="gradeArea"/>
             {/* <Spin tip="Loading..." delay="3"> */}
             {/* </Spin> */}
             <div className="chooseTask">
                 <span className='chooseSpan'>בחר מטלה :  </span>
-                <Select defaultValue="בחר מטלה"  onChange={handleChange}>
+                <Select defaultValue="מוד מבחן"  onChange={handleChange}>
                 {
                    (this.state.course.tasks) ?  this.state.course.tasks.map((task,idx) =>   
                     <Option  key = {idx} value = {task.taskNumber}>{task.taskName}</Option> ) 
@@ -199,20 +263,21 @@ class Coursepage extends Component {
                 }       
                 </Select>
                 <br/>
-                <br/>
+               
+                {/* <br/>
                 
                 <span className='chooseSpan'>הכנס תעודת זהות :  </span>
-                <br/>
-                <div>
+                <br/> */}
+                {/* <div>
                 <Input className='my-inputs' onChange={(evt) => { this.setState( {studentID:evt.target.value}) }} />
-                </div>
+                </div> */}
                 <br/>
 
                 <Button type="primary" onClick={this.download}> הורד קבצים</Button>
                 <Button type="primary"> פתרון כללי</Button>
                 <Button type="primary"> פתרון שלי</Button>
             </div>
-            <Dragger {...props}>
+            <Dragger beforeUpload={this.beforeUpload} {...props} name='file'>
               <p className="ant-upload-drag-icon">
                 <Icon type="inbox" />
               </p>
@@ -220,9 +285,10 @@ class Coursepage extends Component {
               <p className="ant-upload-hint">או לחץ להעלות קבצים</p>
             </Dragger>
             <div className="submissionBtn"> 
-              <Button type="primary">  הגשה במוד אימון</Button>
-              <Button onClick={this.submission } type="primary"> הגשה סופית </Button>
+              <Button onClick={() => this.submission('practice')} type="primary">  הגשה במוד אימון</Button>
+              <Button  onClick={() => this.submission('final')} type="primary"> הגשה סופית </Button>
             </div>
+            {/* <NewExample setResult={this.setResult} /> */}
            
         </div>
         );
