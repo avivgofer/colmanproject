@@ -5,6 +5,7 @@
 }
 .courses{
     display:flex;
+    flex-flow: row wrap;
     direction: rtl;
     width:100%;
 }

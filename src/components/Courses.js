@@ -23,11 +23,17 @@ class Courses extends Component {
         <div className='coursesContainer'>
           
             {
+              (this.props.courses) ?
                 this.props.courses.map((course , idx) =>  
-                <Link to={'/course/'+course.coursePathName} key= {course.courseName}> 
+                <Link to={{
+                  pathname: '/course/' + course.title,
+                  state: {
+                    course: course
+                  }}} key= {course._id} params={{ course: course }}> 
                     <Coursebox onClick={this.handleClick} course = {course} key = {idx} />
                     </Link>
-                     )                                                          
+                     )    
+                     : ''                                                      
             }
         </div>
         );

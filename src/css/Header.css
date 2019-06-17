@@ -42,3 +42,26 @@
     margin-left: 167px;
     
 }
+
+.authStatus button{
+    background-color:#69CCE8;
+    color:white;
+    
+    border:2px solid white;
+    
+    font-weight: bold;
+    border-radius: 8px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+  }
+  
+  .authStatus button:hover {
+    /* border-color: red;  */
+    color: #69CCE8;
+    background-color: white;
+    /* border:2px dashed white; */
+    
+    /* background-color:white;
+    color: red; */
+  }
+  

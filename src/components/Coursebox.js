@@ -26,14 +26,17 @@ class Coursebox extends Component {
         <div className='courseContainer'>
             
             <div className='courseBox'>
-                <div className='courseName'>{(this.props.course.courseName) ? this.props.course.courseName : 'dddd'}</div>
+            
+                <div className='courseName'>
+                {(this.props.course.title) ? this.props.course.title : 'undefind'}
+                </div>
             </div>
             
-            <div className='progressBox'>
+            {/* <div className='progressBox'>
                 {
                     this.props.course.numberOfDoneTasks ?  <Progress percent={this.getProgress()} /> : ''
                 }
-            </div>
+            </div> */}
         </div>
         );
       }

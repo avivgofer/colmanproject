@@ -6,17 +6,16 @@ import '../css/CoursePage.css';
 import NewExample from './NewExample'
 import { Input } from 'antd';
 import axios from 'axios';
-//window.location.pathname.split('/')[2]
 
 
 
 
-function pasteGrade() {
-  var t = document.getElementById("gradeArea").textContent;
-  var y = document.createTextNode("This just got added");
+// function pasteGrade() {
+//   var t = document.getElementById("gradeArea").textContent;
+//   var y = document.createTextNode("This just got added");
   
-  t.appendChild(y);
-}
+//   t.appendChild(y);
+// }
 
 
 function getCourse()
@@ -52,6 +51,7 @@ class Coursepage extends Component {
      constructor(props){
         super(props)
         this.state = {
+          tasks: [],
           isSent : false,
           course: getCourse(),
           selectedTask : '',
@@ -59,24 +59,20 @@ class Coursepage extends Component {
           file : '',
           studentID: '',
           output: '',
-          mode: ''
+          mode: '',
+          isWaiting: false
         };
         this.submission = this.submission.bind(this);
      }
 
-  //    get form() {
-  //      console.log(this.state)
-  //      debugger
-  //     let data = new FormData()
-  //     data.append('mode', this.state.mode)
-  //     this.state.filesArray.map(file => data.append('solution_files', file))
-  //     return data
-  // }
-  
+     componentDidMount() {
+      this.getTasks();
+     }
 
      setResult = (output) => {
        this.setState({output})
      }
+
 
 
      beforeUpload = (file) => {
@@ -90,7 +86,7 @@ class Coursepage extends Component {
         mode:mode
       });
       console.log(this.state)
-      debugger
+   
        console.log(!this.state.selectedTask);
      
       if(!this.state.selectedTask){
@@ -107,26 +103,12 @@ class Coursepage extends Component {
         // message.error(`no file uploaded.`);
       }
 
-      
-
-      // let formData = new FormData();
-      // formData.append("mode", "practice");
-
-      
-      // console.log(this.state.filesArray);
-       
-      //  this.state.filesArray.map((file) => {
-      //  formData.append("solution_files",file)
-      //  });  
-   
-       
-        //  formData.append("solution_files", this.state.filesArray);
 
         const data = form(mode,this.state.filesArray);
-
+        const selectedTaskId = this.state.selectedTask
         const requestOptions = {
           method: 'POST',
-          url: '/tasks/5cfeba9681b1f1212c0e47d5/submissions',
+          url: '/tasks/'+ selectedTaskId +'/submissions',
           data,
           'Content-Type': 'multipart/form-data',
           headers: {
@@ -134,32 +116,18 @@ class Coursepage extends Component {
           }
       }
       console.log(this.state)
+
       
           this.setState({isSent: true})
+          this.setState({isWaiting:true});
           axios(requestOptions).then(res => {
+            this.setState({isWaiting:false});
               this.setResult(`${res.data.output}! grade:${res.data.grade}`)
           })
           .catch(err => {//TODO something with result after deadline 
-              debugger
+            this.setState({isWaiting:false});
+            this.setResult(`something went wrong with your request!`)
           })
-
-      
-
-  // for( var i = 0; i < this.state.filesArray.length; i++ ){
-  //   let file = this.state.filesArray[i];
-  
-  //   formData.append('solution_files[' + i + ']', file.originFileObj);
-  // }
-
-      // var conetentType = { headers: { "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjAyMzQ3NjcxNTcsImV4cCI6MTU2MDMyMTE2NzE1N30.rJvK9y7F5pXa1EEbxwSDWJPBfrNulPsiHIRmxfG0FDs" } };
-      // axios.post("/tasks/5cfeba9681b1f1212c0e47d5/submissions", formData, conetentType)
-      //   .then(res => document.getElementById("gradeArea").value ="your grade is: "+ res.data.grade)
-      //   .then(res =>
-      //     // this.document.getElementById("gradeArea").contentWindow.document.write(res.data)
-      //     // document.getElementById("gradeArea").value = 
-      //     console.log()
-      //   );
-     
     }
 
     saveData = (function () {
@@ -182,11 +150,41 @@ class Coursepage extends Component {
       {
         var data = this.state.file.originFileObj;
         console.log(data);
-        debugger;
         const fileName = data.name
         this.saveData(data, fileName);
       } 
   }
+
+  debuggerFunc = () => {
+    console.log(this);
+    debugger
+  }
+
+  getTasks = () => {
+    var self = this;
+    const auth = JSON.parse(localStorage.getItem('token')).replace('"','');
+    const tempAuth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjA2NjU1NDcyMzgsImV4cCI6MTU2MDc1MTk0NzIzOH0.vGquvDnwfDV4vKUZHRSJWUiPod5QXmlI9Q24yXyvBS0";
+    const header = {
+      headers: {
+        authorization: tempAuth
+      }
+  }// + this.props.location.state.course.tasks
+    axios
+        .get("http://localhost:3000/tasks/", {headers: {authorization: auth}})
+        .then((response) => {
+          response.data.map((task) => {
+            if(task._id == this.props.location.state.course.tasks){
+              var tempTasks = self.state.tasks;
+              tempTasks.push(task);
+              self.setState({tasks:tempTasks});
+            }
+          });
+        })
+        .catch(err => {
+            console.log(err);
+            return null;
+        });
+ };
     
   render() {
     function handleChange(value) {
@@ -196,9 +194,6 @@ class Coursepage extends Component {
       console.log(`selected ${value}`);
     }
 
-   
-    
-    //  const defaultTaskValue = this.state.course ? this.state.course.tasks[0].taskName : 'אין מטלות';
      const { TextArea } = Input;
      const Option = Select.Option;
      const Dragger = Upload.Dragger;
@@ -215,16 +210,7 @@ class Coursepage extends Component {
           if (status === 'done') {
             message.success(`${info.file.name} file uploaded successfully.`);
             console.log(info.file);
-          
-            // myThis.setState(prevState => ({
-            //   filesArray: [...prevState.filesArray, info.file]
-            // }))
-
-            // myThis.setState({
-            //   filesArray: info.filesArray
-            //   // file: info.file
-            // });
-           
+            
           } else if (status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
          }
@@ -239,42 +225,38 @@ class Coursepage extends Component {
           <tr>
             <th>
             <div className="coureseTitle">
-               {this.state.course.courseName}
+            <span>שם הקורס: </span>
+               {this.props.location.state.course.title}
              </div>
             </th>
             <th>
             <div className='gradeTitle'>
-              ציון:
+            {
+              (this.state.isWaiting) ? <Spin tip="Waiting..." direction='rtl' > 
+              </Spin> : ' תוצאה:'
+            }
+             
             </div>
             </th>
           </tr>
         </tbody>
         </table>
             <TextArea value={this.state.output} id="gradeArea"/>
-            {/* <Spin tip="Loading..." delay="3"> */}
-            {/* </Spin> */}
+            
             <div className="chooseTask">
                 <span className='chooseSpan'>בחר מטלה :  </span>
-                <Select defaultValue="מוד מבחן"  onChange={handleChange}>
+                <Select defaultValue="בחר מטלה"  onChange={handleChange}>
                 {
-                   (this.state.course.tasks) ?  this.state.course.tasks.map((task,idx) =>   
-                    <Option  key = {idx} value = {task.taskNumber}>{task.taskName}</Option> ) 
+                   (this.state.tasks) ?  this.state.tasks.map((task,idx) =>   
+                    <Option  key = {idx} value = {task._id}>{task.title}</Option> ) 
                     : ''
                 }       
                 </Select>
                 <br/>
-               
-                {/* <br/>
-                
-                <span className='chooseSpan'>הכנס תעודת זהות :  </span>
-                <br/> */}
-                {/* <div>
-                <Input className='my-inputs' onChange={(evt) => { this.setState( {studentID:evt.target.value}) }} />
-                </div> */}
                 <br/>
 
                 <Button type="primary" onClick={this.download}> הורד קבצים</Button>
-                <Button type="primary"> פתרון כללי</Button>
+                <Button type="primary" onClick={this.debuggerFunc}> פתרון כללי</Button>
                 <Button type="primary"> פתרון שלי</Button>
             </div>
             <Dragger beforeUpload={this.beforeUpload} {...props} name='file'>

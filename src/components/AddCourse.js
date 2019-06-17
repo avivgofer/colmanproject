@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Upload, Icon, message, Button } from 'antd';
  import '../css/AddCourse.css';
 import { Input } from 'antd';
+import axios from 'axios';
 
 
 
@@ -10,7 +11,7 @@ class AddCourse extends Component {
         super(props)
         this.state = {
           courseName: '',
-          coursePathName: '',
+          courseYear: '',
           taskFile: '',
           taskCheckFile: '',
           tasks:[]
@@ -28,17 +29,33 @@ class AddCourse extends Component {
 
 
      addCourse(){
-       if(this.state.courseName && this.state.coursePathName)
+       if(this.state.courseName && this.state.courseYear)
        {
-        var a = JSON.parse(localStorage.getItem('myData'));
-        if(!a){
-          a = [];
-        }
-        a.push(this.state);
-        localStorage.setItem('myData', JSON.stringify(a));
-        console.log(this.state);
-        debugger;
-        this.props.history.push('/admin')
+       
+
+        var data = {};
+        data['title'] = this.state.courseName;
+        data['year'] = this.state.courseYear;
+
+        //  const data = {
+        //   title : 
+        //   year : 
+        // }
+        const requestOptions = {
+          headers: {
+              'Content-Type' : 'application/json',
+              authorization: JSON.parse(localStorage.getItem('token')).replace('"','')
+          }
+      }
+          axios.post("http://localhost:3000/courses",{title :this.state.courseName ,year :this.state.courseYear },requestOptions).then(res => {
+          this.props.history.push('/admin')
+          window.location.reload();
+          })
+          .catch(err => {//TODO something with result after deadline 
+          this.props.history.push('/admin')
+          window.location.reload();
+          })
+
        }
        else{
         message.error(`חסר נתונים!`);
@@ -95,18 +112,18 @@ class AddCourse extends Component {
 
     return (
         <div className='Container'>
-        <span>שם הקורס בעברית</span>
+
+        <span>הכנס את השם הקורס באנגלית</span>
         <div>
-        
-        <Input className='my-inputs' onChange={(evt) => { this.setState( {courseName:evt.target.value}) }} />
+         <Input className='my-inputs' onChange={(evt) => { this.setState( {courseName:evt.target.value}) }} />
         </div>
-        <span>שם הקורס באנגלית עבור הכתובת</span>
+
+        <span>הכנס את השנה:</span>
         <div>
-        
-        <Input className='my-inputs' onChange={(evt) => { this.setState( {coursePathName:evt.target.value}) }} />
+         <Input className='my-inputs' onChange={(evt) => { this.setState( {courseYear:evt.target.value}) }} />
         </div>
        
-        <span>הוסף מטלה</span>
+        {/* <span>הוסף מטלה</span>
         <Dragger {...props} className='my-inputs'>
               <p className="ant-upload-drag-icon">
                 <Icon type="inbox" />
@@ -114,8 +131,8 @@ class AddCourse extends Component {
               <p className="ant-upload-text">הוסף מטלה</p>
               <p className="ant-upload-hint">ניתן לגרור לכאן</p>
             </Dragger>
-            <span>שם המטלה</span>
-        <div>
+            <span>שם המטלה</span> */}
+        {/* <div>
         
         <Input className='my-inputs' onChange={(evt) => { this.handleTask(evt) }} />
         </div>
@@ -126,7 +143,7 @@ class AddCourse extends Component {
               </p>
               <p className="ant-upload-text">הוסף בדיקה למטלה</p>
               <p className="ant-upload-hint">ניתן לגרור לכאן</p>
-            </Dragger>
+            </Dragger> */}
             {/* <Link to='/admin'> */}
               <Button onClick={this.addCourse}>הוסף קורס</Button>
             {/* </Link> */}

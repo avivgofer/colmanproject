@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Route ,Switch } from 'react-router-dom';
 import ErrorNotFound from './ErrorNotFound';
 import { app } from './base'
 import AdminCoursePage from './components/AdminCoursePage';
+import axios from 'axios';
 
 
 
@@ -26,22 +27,42 @@ const task1 = {taskName:'מטלה 1 ',taskNumber:1}
     const b = {courseName : 'פיתוח תוכנה מתקדם' ,coursePathName : 'pitoh', numberOfDoneTasks : 5 , numberOfTasks : 7} ;
     const c = {courseName : 'אלגוריתמים 2' ,coursePathName : 'algo2', numberOfDoneTasks : 5 , numberOfTasks : 9,tasks: tasks} ;  
     const coursesTemp = [a,b,c] ;
-
+    const getCourses = async () => {
+      try {
+        return await axios.get('http://localhost:3000/courses')
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    
 
 
 class Body extends Component {
+
     constructor(props){
         super(props)
         this.state = {
             log: '',
             httpRequests: 0,
-            initial : ''
+            initial : '',
+            courses : ''
         }
         this.checkLog = this.checkLog.bind(this);
         this.checkLog()
        // this.getCoursesT = getCoursesT.bind(this);  
       
      }
+
+     
+
+     courses() {
+       
+      axios.get('http://localhost:3000/courses')
+      .then((res) =>{
+       this.setState({courses: res.data}) 
+   });  
+
+    }
 
     //  getDataFromServer = async () => {
     //    // imp 1)
@@ -54,8 +75,10 @@ class Body extends Component {
     //  }
 
      componentDidMount() {
-       this.checkLog()
+       this.courses();
+       //this.checkLog()
        this.setState({initial: false})
+   
        
      }
 
@@ -79,27 +102,45 @@ class Body extends Component {
       })
     }
 
-    isUserExist = () => !!this.state.user;
+    isUserExist = () => {
+      return (!!JSON.parse(localStorage.getItem('token')))
+    }
 
-    isUserIsAdmin = () => (this.state.user.email === 'eli@gmail.com');
+
+    isUserIsAdmin = () => {
+      const permission = localStorage.getItem('permission');
+      if(permission != 'undefined' && permission == '"admin"')
+        {
+          return true
+        }
+      return false
+    } 
+
+
+
+    getCourses() {
+
+    }
     
     logout() {
-      app.auth().signOut()
-      // this.props.history.push('/')
+      localStorage.setItem('token',JSON.stringify(''));
+      // app.auth().signOut()
+       window.location.reload();
     }
+
     render() {
         return (
           this.state.httpRequests > 0 
           ? <div style={{width: '100%', height: '100%', opacity: '0.5', justifyContent: 'center'}}>  
           <Icon style={{marginLeft: '50%'}} type="loading" /></div>
           : 
-          <Router>
+          <Router >
              
           <Header />
-             <Route exact={true} path="/login" component={LoginOnly} />
+             <Route exact={true} path="/login"  component={LoginOnly} />
           { !this.isUserExist()
         
-            ? <LoginOnly />
+            ? <LoginOnly /> 
             : 
             this.isUserIsAdmin()
             ?
@@ -111,7 +152,7 @@ class Body extends Component {
                 <Route
                 path='/'
                 exact = {true}
-                render={() => (<Courses courses = {coursesTemp} isAuthed={true} />)}
+                render={() => (<Courses courses = {this.state.courses} isAuthed={true} />)}
                 />
                 <Route
                 path='/admin'
@@ -135,7 +176,7 @@ class Body extends Component {
                <Route
                path='/'
                exact = {true}
-               render={() => (<Courses courses = {coursesTemp} isAuthed={true} />)}
+               render={() => (<Courses courses = {this.state.courses} isAuthed={true} />)}
                />
                <Route  path="/course" component={Coursepage} />
                <Route path="*" component={ErrorNotFound} />    

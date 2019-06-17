@@ -3,6 +3,7 @@ import  Coursebox  from './Coursebox';
 import { Link } from 'react-router-dom'
 import '../css/CoursesT.css';
 import { Button ,Icon} from 'antd';
+import axios from 'axios';
 
 
 
@@ -11,7 +12,8 @@ class CoursesT extends Component {
      constructor(props){
         super(props)
         this.state = {
-            courses: this.getCoursesT()
+            // courses: this.getCoursesT()c
+          courses: ''
         };
         this.deleteCourse = this.deleteCourse.bind(this);
        // this.getCoursesT = getCoursesT.bind(this);
@@ -19,15 +21,33 @@ class CoursesT extends Component {
      }
      componentDidMount() {
         this.checkUser();
+        this.getCoursesDB();
      }
       checkUser() {
        
       }
+
+      getCoursesDB(){
+           
+      axios.get('http://localhost:3000/courses')
+      .then((res) =>{
+       this.setState({courses: res.data}) 
+   });  
+
+      }
+
       deleteCourse(value){
-            var a = JSON.parse(localStorage.getItem('myData'));
-            a = a.filter((e) => e.coursePathName !== value.coursePathName);
-            localStorage.setItem('myData', JSON.stringify(a));
-            this.setState({courses:this.getCoursesT()});
+            const auth = JSON.parse(localStorage.getItem('token'));
+            axios
+            .delete("http://localhost:3000/courses/" + value._id, {headers: {authorization: auth}})
+            .then((response) => {
+              window.location.reload();
+            })
+            .catch(err => {//return 404 but its working !!! TODO
+              window.location.reload();
+                return null;
+            });
+            
         }
       getCoursesT() {
         return JSON.parse(localStorage.getItem('myData'));
@@ -54,7 +74,7 @@ class CoursesT extends Component {
                     <div key={idx+2}>
                       <Icon value={course} onClick={() => {if(window.confirm('Are you sure? Delete item?')) {this.deleteCourse(course)}}}
                        type="delete" key={idx+1} />
-                       <Link to={'/admin/'+course.coursePathName} key= {course.courseName}> 
+                       <Link to={'/admin/'+course.title} key= {course._id}> 
                       <Coursebox onClick={this.handleClick} course = {course} key = {idx} />
                       </Link>
                     </div>

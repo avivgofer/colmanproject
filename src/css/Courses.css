@@ -1,5 +1,6 @@
 .coursesContainer{
 display:flex;
+flex-flow: row wrap;
 direction: rtl;
 width:100%;
 padding: 0 189px 0 124px;
