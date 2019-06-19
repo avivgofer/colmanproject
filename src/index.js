@@ -47,8 +47,8 @@ class Body extends Component {
             initial : '',
             courses : ''
         }
-        this.checkLog = this.checkLog.bind(this);
-        this.checkLog()
+        // this.checkLog = this.checkLog.bind(this);
+        // this.checkLog()
        // this.getCoursesT = getCoursesT.bind(this);  
       
      }

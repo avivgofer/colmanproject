@@ -173,7 +173,7 @@ class Coursepage extends Component {
         .get("http://localhost:3000/tasks/", {headers: {authorization: auth}})
         .then((response) => {
           response.data.map((task) => {
-            if(task._id == this.props.location.state.course.tasks){
+            if(task.course == this.props.location.state.course._id){
               var tempTasks = self.state.tasks;
               tempTasks.push(task);
               self.setState({tasks:tempTasks});

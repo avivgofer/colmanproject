@@ -8,7 +8,6 @@ import axios from 'axios';
 class LoginOnly extends Component {
   constructor(props) {
     super(props);
-    this.authWithEmailPassword = this.authWithEmailPassword.bind(this)
     this.state = { redirect: false , toRegister: false }
   }
 
@@ -19,7 +18,7 @@ class LoginOnly extends Component {
 
     const requestOptions = {
       method: 'POST',
-      url: '/users',
+      url: '/users/signUp',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -28,25 +27,30 @@ class LoginOnly extends Component {
         lastName: this.lastNameInput.value,
         identityNumber: this.idInput.value,
         password: this.passwordInput.value,
+        permission: 'student',
         email: this.emailInput.value
       }
   }
+  if(this.passwordInput.value == this.passwordValidInput.value)
+   {
     
       axios(requestOptions).then(res => {
         if(res.data.success){
+          message.success(res.data.message);
           this.setState({toRegister:false})
         }
       })
-      .catch(err => {//TODO something with result after deadline 
-          debugger
+      .catch(err => { 
+        (err.response.data.message) ? 
+        message.error(err.response.data.message)
+        : message.error('someting missing !')
       })
+    }
+    else{message.error(`diffrent password validation!`);}
   }
 
 
 
-
-
-   
  
   authWithIdAndPassword(event){ 
     event.preventDefault()
@@ -56,7 +60,6 @@ class LoginOnly extends Component {
     const requestOptions = {
       method: 'POST',
       url: '/users/signin',
-      // 'Content-Type': 'application/json',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -74,46 +77,47 @@ class LoginOnly extends Component {
            window.location.reload();
         }
       })
-      .catch(err => {//TODO something with result after deadline 
+      .catch(err => {
           debugger
+          message.error(`wrong password/ID! `);
       })
   }
 
  
   
-  authWithEmailPassword(event) {
-    event.preventDefault()
-    const email = this.emailInput.value
-    const password = this.passwordInput.value
+  // authWithEmailPassword(event) {
+  //   event.preventDefault()
+  //   const email = this.emailInput.value
+  //   const password = this.passwordInput.value
 
-    app.auth().fetchSignInMethodsForEmail(email)
-      .then((providers) => {
-        if (providers.length === 0) {
-          // create user
-        //   return app.auth().createUserWithEmailAndPassword(email, password).then(res => {
-            message.error(`wrong password/email ! `);
-        } else if (providers.indexOf("password") === -1) {
-          // they used facebook
-          message.error(`something went wrong ! `);
-        } else {
-          // sign user in
+  //   app.auth().fetchSignInMethodsForEmail(email)
+  //     .then((providers) => {
+  //       if (providers.length === 0) {
+  //         // create user
+  //       //   return app.auth().createUserWithEmailAndPassword(email, password).then(res => {
+  //           message.error(`wrong password/email ! `);
+  //       } else if (providers.indexOf("password") === -1) {
+  //         // they used facebook
+  //         message.error(`something went wrong ! `);
+  //       } else {
+  //         // sign user in
        
-         return app.auth().signInWithEmailAndPassword(email, password)
-        }
-      })
-      .then((user) => {
-        if (user && user.email) {
-          this.loginForm.reset()
-          this.setState({redirect: true , user: user})
-          this.props.history.push('/')
-          console.log(this.state);
+  //        return app.auth().signInWithEmailAndPassword(email, password)
+  //       }
+  //     })
+  //     .then((user) => {
+  //       if (user && user.email) {
+  //         this.loginForm.reset()
+  //         this.setState({redirect: true , user: user})
+  //         this.props.history.push('/')
+  //         console.log(this.state);
        
-        }
-      })
-      .catch((error) => {
-        this.toaster.show({ intent: Intent.DANGER, message: error.message })
-      })
-  }
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       this.toaster.show({ intent: Intent.DANGER, message: error.message })
+  //     })
+  // }
 
   render() {
     return (
