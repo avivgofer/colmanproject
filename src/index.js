@@ -6,6 +6,8 @@ import Courses from '../src/components/Courses'
 import AddCourse from '../src/components/AddCourse'
 import CoursesT from '../src/components/CoursesT'
 import LoginOnly from '../src/components/LoginOnly'
+import TestComposition from '../src/components/Lecturer/TestComposition'
+import AddTestUnit from '../src/components/Lecturer/AddTestUnit'
 import * as serviceWorker from './serviceWorker';
 import 'antd/dist/antd.css';
 import {Icon} from 'antd'
@@ -161,6 +163,8 @@ class Body extends Component {
                 />
                 <Route  path="/course" component={Coursepage} />
                 {/* <Route exact={true} path="/404" component={Page404} /> */}
+                <Route exact={true} path="/admin/addTestUnit" component={AddTestUnit} />
+                <Route exact={true} path="/admin/buildTest" component={TestComposition} />
                 <Route exact={true} path="/admin/addCourse" component={AddCourse} /> 
                 <Route exact={false} path="/admin/" component={AdminCoursePage} />
                 <Route exact={true} path="/login"  />

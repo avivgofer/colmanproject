@@ -15,7 +15,6 @@ class LoginOnly extends Component {
 
   register(event){ 
     event.preventDefault()
-
     const requestOptions = {
       method: 'POST',
       url: '/users/signUp',

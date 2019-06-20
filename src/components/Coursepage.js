@@ -156,17 +156,38 @@ class Coursepage extends Component {
   }
 
   debuggerFunc = () => {
-    console.log(this);
-    debugger
+    
+
+//     const requestOptions = {
+//       method: 'GET',
+//       url: '/testUnit',
+//       'Content-Type': 'application/json',
+//       headers: {
+//           authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlODYyMGMyODJjNmI4MDc1MDlhODMiLCJpYXQiOjE1NjA5NDk1OTA1MDUsImV4cCI6MTU2MTAzNTk5MDUwNX0.NBrcFTweW7vIfYxz-Fi5EdX4UBBrz7KOTob5HCrUzWI'
+//       }
+//   }
+// axios(requestOptions).then(res => {
+// console.log(res);
+// })
+// .catch(err => {
+//  console.log(err)
+// })
+
+
+
   }
 
+
+
+
+  
   getTasks = () => {
     var self = this;
     const auth = JSON.parse(localStorage.getItem('token')).replace('"','');
     const tempAuth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjA2NjU1NDcyMzgsImV4cCI6MTU2MDc1MTk0NzIzOH0.vGquvDnwfDV4vKUZHRSJWUiPod5QXmlI9Q24yXyvBS0";
     const header = {
       headers: {
-        authorization: tempAuth
+        authorization: auth
       }
   }// + this.props.location.state.course.tasks
     axios

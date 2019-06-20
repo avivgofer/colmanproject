@@ -63,6 +63,12 @@ class CoursesT extends Component {
         <Link to='/admin/addCourse'>
         <Button >הוסף קורס</Button>
         </Link>
+        <Link to='/admin/buildTest'>
+        <Button >הרכב מבחן</Button>
+        </Link>
+        <Link to='/admin/addTestUnit'>
+        <Button >הוסף בדיקה</Button>
+        </Link>
         </div>
         
         <div className='courses'>
