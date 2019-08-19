@@ -23,7 +23,7 @@ export default class TransferTests extends React.Component {
 
   componentDidMount() {
     this.getAlltests();
-    console.log("stateeeeeee:", this.state)
+    //console.log("stateeeeeee:", this.state)
   }
 
   
@@ -43,16 +43,16 @@ export default class TransferTests extends React.Component {
         var temp = [];
         res.data.map(test => {
           temp.push({
-            title: test.title,
+            title: test.title+':=:'+test._id, /////
             description: test.description,
             type: test.type
           });
         });
-        console.log("temp: ", temp);
+        //console.log("temp: ", temp);
         this.getMock(temp);
 
         this.setState({testUnitArray:temp});
-        console.log("this teset unit:" , this.state.testUnitArray)
+       // console.log("this teset unit:" , this.state.testUnitArray)
       })
       .catch(err => {
         console.log(err);
@@ -60,33 +60,34 @@ export default class TransferTests extends React.Component {
   };
 
   getMock = (allTestUnits) => {
-    console.log("get mock", this.state.mockData);
+    //console.log("get mock", this.state.mockData);
     const targetKeys = [];
     const mockData = [];
     console.log("lent=", allTestUnits.length);
     for (let i = 0; i < allTestUnits.length; i++) {
         const testUnit = {
             key: i.toString(),
-            title: allTestUnits[i].title,
+            testId: (allTestUnits[i].title.toString().split(':=:'))[1],
+            title: (allTestUnits[i].title.toString().split(':=:'))[0],
             description: allTestUnits[i].description,
             type: allTestUnits[i].type,
     };
-    console.log("check mock", testUnit);
+    //console.log("check mock", testUnit);
       targetKeys.push(testUnit.key);
       mockData.push(testUnit);
-      console.log("check mock 2", mockData);
+      //console.log("check mock 2", mockData);
 
     }
     this.setState({ mockData, targetKeys });
   };
 
   handleChange = targetKeys => {
-    console.log("targetKeys:", targetKeys);
+    //console.log("targetKeys:", targetKeys);
     this.setState({ targetKeys });
     var selectedTests = this.state.mockData.filter(testUnit => {
       return !((targetKeys.indexOf(testUnit.key.toString()) > -1 ));
     });
-    console.log("selected",selectedTests)
+    //console.log("selected",selectedTests)
     this.setState({finalSelected: selectedTests});
     this.props.updateTable(selectedTests);
 };

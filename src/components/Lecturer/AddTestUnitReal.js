@@ -1,4 +1,4 @@
-import {Col, Row, Form, Select, Radio, Button, Upload, Icon, Input } from "antd";
+import { Form, Select, Radio, Button, Upload, Icon, Input } from "antd";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "../../css/AddTestUnit.css";
@@ -11,12 +11,12 @@ class AddTestUnit extends React.Component {
     super(props);
     this.state = {
       tasks: [],
-      selectedTask: "5cfeba9681b1f1212c0e47d5",
+      selectedTask: "",
       title: "",
       compilationLine: "",
       description: "",
       type: "", //value="exe" or value="io", change it
-      filesArray: [],
+      uploaded: [],
       showInputOutout: false,
       showExe: false,
     };
@@ -24,11 +24,8 @@ class AddTestUnit extends React.Component {
 
   componentDidMount() {
     this.getTasks();
-   // this.setTasksOptions();
   }
 
-
-  //for tasks
   setTasksOptions = () => {
     console.log("set tasks");
     var x = document.getElementById("tasks");
@@ -38,98 +35,46 @@ class AddTestUnit extends React.Component {
     console.log("option", option);
    // x.add(option);
     var tempTasks = this.state.tasks;
-    console.log('temps tasls:' , tempTasks[0]);
-    var option = document.createElement("option");
-    option.text = tempTasks[0];
-    x.add(option);
-    console.log('x', x);
-
-    // tempTasks.forEach(task => {
-    //   console.log('foreach')
-    //   console.log('one task: ', task);
-    //   var option = document.createElement("option");
-    //   option.text = task;
-    //   x.add(option);
-    //   console.log("tasks option: ", this.state.tasks);
-    // });
-    console.log('finished')
-    
+    tempTasks.forEach(task => {
+      var option = document.createElement("option");
+      option.text = task;
+      x.add(option);
+    });
   };
 
-  form = ( filesArray,title,description, compilationLine, task, type) => {
-    let data = new FormData()
-    data.append('test_file', filesArray[0]);
-    data.append('title',title);
-    data.append('description', description);
-    data.append('compilationLine', compilationLine);
-    data.append('task', task);
-    data.append('type', type);
-    
-    return data;
-  }
-
-
   getTasks = () => {
-    var self = this;
-    const auth = JSON.parse(localStorage.getItem('token'));
-    if(auth){
-      auth.replace('"','');
-    }
-    const tempAuth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjA2NjU1NDcyMzgsImV4cCI6MTU2MDc1MTk0NzIzOH0.vGquvDnwfDV4vKUZHRSJWUiPod5QXmlI9Q24yXyvBS0";
-    const header = {
+    const token = JSON.parse(localStorage.getItem('token')).replace('"','');
+    
+    const requestOptions = {
+      //change to setItem or getItem of token
+      method: "GET",
+      url: "/tasks",
+      "Content-Type": "application/json",
       headers: {
-        authorization: auth
+        authorization:
+        token
       }
-  }// + this.props.location.state.course.tasks
-    axios
-        .get("http://localhost:3000/tasks/", {headers: {authorization: auth}})
-        .then((response) => {
-          response.data.map((task) => {
-              var tempTasks = self.state.tasks;
-              tempTasks.push(task);
-              self.setState({tasks:tempTasks});
-          });
-        })
-        .catch(err => {
-            console.log(err);
-            return null;
+    };
+    axios(requestOptions)
+      .then(res => {
+        var tasksList = res.data;
+        console.log("res data", res.data);
+        console.log("tests data from axios", tasksList);
+        var tempTasks = [];
+        tasksList.map(task => {
+          tempTasks.push(task.title);
         });
- };
+        console.log("please", tempTasks);
+        this.setState({ tasks: tempTasks });
+        this.setTasksOptions();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
-
-//   getTasks = () => {
-//     console.log('GET TASKS');
-//     const auth = JSON.parse(localStorage.getItem('token')).replace('"','');
-//     const tempAuth = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjA2NjU1NDcyMzgsImV4cCI6MTU2MDc1MTk0NzIzOH0.vGquvDnwfDV4vKUZHRSJWUiPod5QXmlI9Q24yXyvBS0";
-//     const header = {
-//       headers: {
-//         authorization: auth
-//       }
-//   }
-//     axios
-//         .get("/tasks", {headers: {authorization: auth}})
-//         .then((response) => {
-//           var tempTasks = this.state.tasks;
-
-//           response.data.map((task) => {
-//               // var tempTasks = this.state.tasks;
-//               tempTasks.push(task.title);
-//               console.log('tsmp tasks', tempTasks);
-//               // return tempTasks;
-//           });
-//           this.setState({tasks:tempTasks});
-//           console.log('state', this.state.tasks);
-//         })
-//         .catch(err => {
-//             console.log(err);
-//             return null;
-//         });
-//  };
-
-  //
   onTypeChange = event => {
     this.setState({ type: event.target.value });
-    console.log('type: ', this.state.type);
     // if(event.target.value==='input-output'){ //change input-output
     //   this.setState({showInputOutout:true});
     //   this.setState({showExe:false});
@@ -140,59 +85,55 @@ class AddTestUnit extends React.Component {
   };
   onTestTitleChange = event => {
     this.setState({ title: event.target.value });
-    console.log('tilte changed: ', this.state.title);
-
   };
   onCompilationChange = event => {
     this.setState({ compilationLine: event.target.value });
-    console.log('compilation changed: ', this.state.compilationLine);
-
   };
   onDescriptionChange = event => {
     this.setState({ description: event.target.value });
-    console.log('decription changed: ', this.state.description);
   };
   onSelectTask = event => {
     this.setState({ selectedTask: event.target.value });
   };
 
-  handleSubmit = e => {
-    console.log("handle sumbit")
-    const data = this.form(this.state.filesArray, this.state.title, this.state.description, this.state.compilationLine
-      ,"5cfeba9681b1f1212c0e47d5", this.state.type);
-    const requestOptions = {
-      method: 'POST',
-      url: '/testUnit/uploads/testUnit',
-      data,
-      'Content-Type': 'multipart/form-data',
-      headers: {
-          authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjAyMzQ3NjcxNTcsImV4cCI6MTU2MDMyMTE2NzE1N30.rJvK9y7F5pXa1EEbxwSDWJPBfrNulPsiHIRmxfG0FDs'
-       }
-      }
-      console.log('axios');
-      axios(requestOptions).then(res => {
-      console.log(res);
-      })
-      .catch(err => {//TODO something with result after deadline 
-        console.log(err);
-      })
-  };
+  // handleSubmit = e => {
+  //   e.preventDefault();
+  //   this.props.form.validateFields((err, values) => {
+  //     if (!err) {
+  //       console.log("Received values of form: ", values);
+  //     }
+  //   });
 
-  beforeUpload = (file) => {
-    const newFiles = this.state.filesArray
-    newFiles.push(file)
-    this.setState({filesArray: newFiles})
-}
+  //   const data = form(mode,this.state.filesArray);
+  //   const selectedTaskId = this.state.selectedTask
+  //   const requestOptions = {
+  //     method: 'POST',
+  //     url: ''/uploads/testUnit,
+  //     data,
+  //     'Content-Type': 'multipart/form-data',
+  //     headers: {
+  //         authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJDb2xtYW5TdWJTeXN0ZW0iLCJzdWIiOiI1Y2ZlYmU4MzQwNDVhMTNiNGM0ODlkOWIiLCJpYXQiOjE1NjAyMzQ3NjcxNTcsImV4cCI6MTU2MDMyMTE2NzE1N30.rJvK9y7F5pXa1EEbxwSDWJPBfrNulPsiHIRmxfG0FDs'
+  //     }
+  // }
+  // axios(requestOptions).then(res => {
+  //   this.setState({isWaiting:false});
+  // })
+  // .catch(err => {//TODO something with result after deadline 
+  //   this.setState({isWaiting:false});
+  //   this.setResult(`something went wrong with your request!`)
+  // })
 
-  // normFile = e => {
-  //   this.setState({uploaded:e.fileList[0]}) //e.fileList
-  //   console.log("Upload event:", e.fileList[0]);
-  //   console.log("state: ", this.state);
-  //   if (Array.isArray(e)) {
-  //     return e;
-  //   }
-  //   return e && e.fileList;
+
   // };
+
+  normFile = e => {
+    this.setState({uploaded:e.fileList})
+    console.log("Upload event:", e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -200,21 +141,6 @@ class AddTestUnit extends React.Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 }
     };
-    const myThis = this;
-
-    function handleChange(value) {
-      myThis.setState({
-        selectedTask : value
-      });
-      console.log(`selected ${value}`);
-    }
-
-    const Dragger = Upload.Dragger;
-    const props = {
-       name: 'file',
-       multiple: true,
-       action: '//jsonplaceholder.typicode.com/posts/'
-      };
     return (
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
@@ -229,30 +155,17 @@ class AddTestUnit extends React.Component {
               </span>
             </Form.Item>
             <div style={{ display: "flex", flexDirection: "row" }}>
-              <Col>
               <Form.Item label="Test:">
                 {getFieldDecorator("title", {
                   rules: [{ required: true, message: "Please input a name!" }]
                 })(
                   <Input
                     onChange={e => this.onTestTitleChange(e)}
-                    style={{ width: "150%"}}
+                    style={{ width: "150%" }}
                   />
                 )}
               </Form.Item>
-              </Col>
-              <Col>
-              <Form.Item  style={{marginLeft:40}}>
-              <Select defaultValue="Choose task"  onChange={handleChange} style={{marginLeft:7}}>
-                {
-                   (this.state.tasks) ?  this.state.tasks.map((task,idx) =>   
-                    <Option  key = {idx} value = {task._id}>{task.title}</Option> ) 
-                    : ''
-                }       
-                </Select>
-                </Form.Item>
-                </Col>
-              {/* <Form.Item label="Task" hasFeedback style={{ marginLeft: 18 }}>
+              <Form.Item label="Task" hasFeedback style={{ marginLeft: 18 }}>
                 <select
                   id="tasks" defaultValue="Generic" 
                   onChange={e => this.onSelectTask(e)}
@@ -261,7 +174,7 @@ class AddTestUnit extends React.Component {
                   Generic
                 </option>
                 </select>
-              </Form.Item> */}
+              </Form.Item>
             </div>
             <div style={{ float: "left" }}>
               <Form.Item style={{ right: 65 }} label="Compilation: ">
@@ -294,20 +207,24 @@ class AddTestUnit extends React.Component {
                 rules: [{ required: true, message: "Please select type!" }]
               })(
                 <Radio.Group onChange={event => this.onTypeChange(event)}>
-                  <Radio value="mainTestUnit">main test</Radio>
-                  <Radio value="ioTestUnit">input-output test</Radio>
+                  <Radio value="io">main test</Radio>
+                  <Radio value="exe">input-output test</Radio>
                 </Radio.Group>
               )}
             </Form.Item>
-          
-            <Dragger beforeUpload={this.beforeUpload} {...props} name='file'>
-              <p className="ant-upload-drag-icon">
-                <Icon type="inbox" />
-              </p>
-              <p className="ant-upload-text"> גרור קבצי בדיקה לכאן </p>
-              <p className="ant-upload-hint">או לחץ להעלות קבצים</p>
-            </Dragger>
-            
+
+            <Form.Item style={{ right: 65, height: 40 }} label="Upload">
+              {getFieldDecorator("files", {
+                valuePropName: "fileList",
+                getValueFromEvent: this.normFile
+              })(
+                <Upload name="logo" action="/upload.do" listType="picture">
+                  <Button>
+                    <Icon type="upload" /> Upload Test
+                  </Button>
+                </Upload>
+              )}
+            </Form.Item>
             <div className="form-group" style={{marginTop:79,width:"100%"}}>
               {this.state.showInputOutout ? (
                 <parent>
